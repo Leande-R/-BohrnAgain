@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/../config/dbaccess.php';
-require_once __DIR__ . '/../models/product.class.php';
-
+require_once '../config/dbacess.php';  
+require_once '../models/product.class.php';
 $statement = $pdo->query("SELECT * FROM products");
 $products = [];
 
