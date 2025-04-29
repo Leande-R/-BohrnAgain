@@ -25,7 +25,24 @@ function renderProducts(products) {
         `;
         container.innerHTML += card;
     });
+
 }
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('../BackEnd/logic/categoryController.php')
+        .then(response => response.json())
+        .then(data => {
+            const categoryBar = document.getElementById('category-bar');
+            data.forEach(category => {
+                const link = document.createElement('a');
+                link.href = `index.html?category_id=${category.id}`; // später Filter
+                link.textContent = category.name;
+                link.classList.add('btn', 'btn-outline-primary', 'me-2'); // Bootstrap Style
+                categoryBar.appendChild(link);
+            });
+        })
+        .catch(error => console.error('Fehler beim Laden der Kategorien:', error));
+});
+
 
 
 
