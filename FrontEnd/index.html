@@ -13,6 +13,17 @@
     <script src="../FrontEnd/js/controller.js" defer></script>
 </head>
 <body>
+    <!-- Navbar laden -->
+<div id="navbar-placeholder"></div>
+<script>
+    // Lädt die Navbar-Datei in das div
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('navbar-placeholder').innerHTML = html;
+        });
+</script>
+
 <div class="container mt-4">
     <h1 class="mb-4">Unsere Produkte</h1>
     <div id="product-list" class="row">
