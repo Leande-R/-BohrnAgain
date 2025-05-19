@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch('../BackEnd/config/products.php')
+    fetch('/BohrnAgain/BackEnd/config/products.php')
         .then(response => response.json())
         .then(products => renderProducts(products))
         .catch(error => console.error('Fehler beim Laden der Produkte:', error));
@@ -28,7 +28,7 @@ function renderProducts(products) {
 
 }
 document.addEventListener("DOMContentLoaded", function() {
-    fetch('../BackEnd/logic/categoryController.php')
+    fetch('/BohrnAgain/BackEnd/logic/categoryController.php')
         .then(response => response.json())
         .then(data => {
             const categoryBar = document.getElementById('category-bar');
