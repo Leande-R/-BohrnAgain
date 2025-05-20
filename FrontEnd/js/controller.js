@@ -70,7 +70,7 @@ function renderProducts(products) {
 
         card.innerHTML = `
             <div class="card mb-4">
-                <img src="/-BohrnAgain/BackEnd/productpictures/${product.image}" class="card-img-top" alt="${product.name}">
+                <img src="/-BohrnAgain/BackEnd/productpictures/${product.image}" class="card-img-top; style="width: 500px; height: 500px; object-fit: cover;" alt="${product.name}">
                 <div class="card-body">
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text">${product.description}</p>

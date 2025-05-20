@@ -13,7 +13,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 // Produktdetails aus DB laden
 function getProductData($pdo, $id) {
-    $stmt = $pdo->prepare("SELECT id, name, price FROM products WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, name, price, description, image FROM products WHERE id = ?");
     $stmt->execute([$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -39,7 +39,9 @@ switch ($requestMethod) {
                     'name' => $item['name'] ?? null,
                     'price' => isset($item['price']) ? (float)$item['price'] : 0,
                     'quantity' => $item['quantity'] ?? null,
-                    'total' => (isset($item['price'], $item['quantity'])) ? ((float)$item['price']) * ((int)$item['quantity']) : 0
+                    'total' => (isset($item['price'], $item['quantity'])) ? ((float)$item['price']) * ((int)$item['quantity']) : 0,
+                    'description' => $item['description'] ?? '',
+                    'image' => $item['image'] ?? ''
                 ];
             }
             echo json_encode($result);
@@ -61,6 +63,8 @@ switch ($requestMethod) {
                     'id' => $product['id'],
                     'name' => $product['name'],
                     'price' => (float)$product['price'],
+                    'description' => $product['description'],
+                    'image' => $product['image'],
                     'quantity' => 1
                 ];
             }
