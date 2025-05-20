@@ -41,8 +41,9 @@ function renderCart(items) {
         card.className = 'card mb-2';
 
         card.innerHTML = `
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
+            <div class="card-body d-flex gap-3">
+                <img src="/-BohrnAgain/BackEnd/productpictures/${item.image}" alt="${item.name}" style="width: 100px; height: auto; object-fit: cover;">
+                <div class="flex-grow-1">
                     <h5>${item.name}</h5>
                     <div class="input-group input-group-sm" style="max-width: 160px;">
                         <button class="btn btn-outline-secondary btn-decrease" data-id="${item.id}">−</button>
@@ -50,6 +51,7 @@ function renderCart(items) {
                         <button class="btn btn-outline-secondary btn-increase" data-id="${item.id}">+</button>
                     </div>
                     <p class="mt-2">${item.price.toFixed(2)} € pro Stück</p>
+                    <p>${item.description}</p>
                 </div>
                 <div class="text-end">
                     <strong>${item.total.toFixed(2)} €</strong><br>
