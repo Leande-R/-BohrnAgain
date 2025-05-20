@@ -4,23 +4,29 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.html">Produkte</a>
+          <a class="nav-link" href="index.html">Produkte</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="cart.html">Warenkorb</a>
+
             <a class="nav-link" href="cart.html">
                 Warenkorb (<span id="cart-count">0</span>)
             </a>
+
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Mein Konto</a>
+          <a class="nav-link" href="account.html">Mein Konto</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Login</a>
+        <li class="nav-item d-flex align-items-center" id="userNav">
+          <!-- Wird per JavaScript befüllt -->
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<script src="../js/navbar.js" defer></script>
