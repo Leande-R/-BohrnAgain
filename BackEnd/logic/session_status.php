@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json');
+ini_set('session.cookie_samesite', 'Lax');
 session_start();
 
 $response = [
