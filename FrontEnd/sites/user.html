@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Benutzerbereich</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../js/userController.js" defer></script>
+</head>
+<body>
+     <div id="navbar-placeholder"></div>
+    <script src="../js/navbarLoader.js" defer></script>
+    
+<div class="container mt-5">
+    <h2>Benutzerbereich</h2>
+
+    <div id="unauthorized" class="text-danger d-none">Nicht eingeloggt. Bitte anmelden.</div>
+
+    <div id="user-view" class="mt-4 d-none">
+        <p><strong>Anrede:</strong> <span id="view-salutation"></span></p>
+        <p><strong>Name:</strong> <span id="view-name"></span></p>
+        <p><strong>Adresse:</strong> <span id="view-address"></span></p>
+        <p><strong>Ort:</strong> <span id="view-location"></span></p>
+        <p><strong>E-Mail:</strong> <span id="view-email"></span></p>
+        <p><strong>Benutzername:</strong> <span id="view-username"></span></p>
+        <p><strong>Zahlung:</strong> <span id="view-payment"></span></p>
+        <button id="edit-btn" class="btn btn-secondary mt-3">Benutzerdaten ändern</button>
+    </div>
+
+    <form id="user-form" class="mt-4 d-none">
+        <div class="row">
+            <div class="col-md-2 mb-3">
+                <label for="salutation" class="form-label">Anrede</label>
+                <select id="salutation" class="form-select">
+                    <option value="">–</option>
+                    <option value="Herr">Herr</option>
+                    <option value="Frau">Frau</option>
+                </select>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label for="firstname" class="form-label">Vorname</label>
+                <input type="text" class="form-control" id="firstname" required>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label for="lastname" class="form-label">Nachname</label>
+                <input type="text" class="form-control" id="lastname" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Adresse</label>
+            <input type="text" class="form-control" id="address" required>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="PLZ" class="form-label">PLZ</label>
+                <input type="text" class="form-control" id="PLZ" required>
+            </div>
+            <div class="col-md-8 mb-3">
+                <label for="city" class="form-label">Stadt</label>
+                <input type="text" class="form-control" id="city" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">E-Mail</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Benutzername</label>
+            <input type="text" class="form-control" id="username" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="payment_info" class="form-label">Zahlungsinformationen</label>
+            <textarea class="form-control" id="payment_info" rows="2"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="passwordConfirm" class="form-label">Passwort zur Bestätigung</label>
+            <input type="password" class="form-control" id="passwordConfirm" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button type="button" class="btn btn-secondary ms-2" id="cancel-btn">Abbrechen</button>
+        <div id="feedback" class="mt-3"></div>
+    </form>
+</div>
+</body>
+</html>
