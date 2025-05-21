@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showMessage("Die eingegebenen Passwörter stimmen nicht überein.", "danger");
                 return;
             }
-
+            
             try {
                 const response = await fetch("/-BohrnAgain/BackEnd/logic/userController.php", {
                     method: "POST",

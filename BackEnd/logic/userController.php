@@ -1,4 +1,5 @@
 <?php
+error_log("Eingehender Body: " . file_get_contents("php://input"));
 
 session_start();
 header('Content-Type: application/json');
@@ -177,6 +178,66 @@ switch ($action) {
 
         echo json_encode(['success' => true, 'items' => $items]);
         break;
+
+    case 'getAllUsers':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Nicht autorisiert']);
+            exit;
+        }
+
+        $stmt = $pdo->query("SELECT id, firstname, lastname, email, city, is_active FROM users WHERE role = 'user'");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'users' => $users]);
+        break;
+
+
+
+
+        case 'getUserOrdersByAdmin':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Nicht autorisiert']);
+            exit;
+        }
+
+        $targetUserId = $input['user_id'] ?? null;
+        if (!$targetUserId) {
+            echo json_encode(['success' => false, 'error' => 'User-ID fehlt']);
+            exit;
+        }
+
+        $stmt = $pdo->prepare("SELECT id, order_date, invoice_number, total, status
+                               FROM orders
+                               WHERE user_id = ?
+                               ORDER BY order_date ASC");
+        $stmt->execute([$targetUserId]);
+        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(['success' => true, 'orders' => $orders]);
+        break;
+    
+
+
+
+ 
+            case 'deactivateUser':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Nicht autorisiert']);
+            exit;
+        }
+
+        $targetUserId = $input['user_id'] ?? null;
+        if (!$targetUserId) {
+            echo json_encode(['success' => false, 'error' => 'User-ID fehlt']);
+            exit;
+        }
+
+        $stmt = $pdo->prepare("UPDATE users SET is_active = 0 WHERE id = ?");
+        $success = $stmt->execute([$targetUserId]);
+
+        echo json_encode(['success' => $success]);
+        break;
+
+       
 
     default:
         echo json_encode(["success" => false, "error" => "Unbekannte Aktion."]);
