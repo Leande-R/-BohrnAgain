@@ -66,14 +66,15 @@ async function placeOrder() {
         const result = await res.json();
 
         if (result.success) {
-            showMessage(" Bestellung erfolgreich aufgegeben!", "success");
+
+            showMessage("Bestellung erfolgreich aufgegeben!", "success");
             setTimeout(() => window.location.href = "index.html", 1500);
         } else {
-            showMessage(result.error || " Bestellung fehlgeschlagen.", "danger");
+            showMessage(result.error || "Bestellung fehlgeschlagen.", "danger");
         }
     } catch (err) {
         console.error("Fehler beim Abschicken der Bestellung:", err);
-        showMessage(" Serverfehler beim Bestellen.", "danger");
+        showMessage("Serverfehler beim Bestellen.", "danger");
     }
 }
 
