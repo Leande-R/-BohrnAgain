@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const sessionData = await sessionRes.json();
 
         if (!sessionData.loggedIn) {
-            window.location.href = "login.html?redirect=1";
+                window.location.href = "login.html?redirect=checkout";
             return;
         }
 
@@ -66,6 +66,7 @@ async function placeOrder() {
         const result = await res.json();
 
         if (result.success) {
+
             showMessage("Bestellung erfolgreich aufgegeben!", "success");
             setTimeout(() => window.location.href = "index.html", 1500);
         } else {
@@ -84,7 +85,7 @@ function showMessage(msg, type) {
 
 // Message für nicht eingeloggte Benutzer, die versuchen, auf den Checkout zuzugreifen
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("redirect") === "1") {
-    showMessage("⚠️ Sie müssen eingeloggt sein, um fortzufahren.", "warning");
+if (urlParams.get("redirect") === "checkout") {
+    showMessage(" Sie müssen eingeloggt sein, um fortzufahren.", "warning");
 }
 

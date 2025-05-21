@@ -33,7 +33,6 @@ async function updateNavbar() {
                 adminNav.innerHTML = `
                     <a class="nav-link text-warning" href="admin_products.html">Produkte bearbeiten</a>
                     <a class="nav-link text-warning" href="admin_users.html">Kunden verwalten</a>
-                    <a class="nav-link text-warning" href="admin_vouchers.html">Gutscheine</a>
                 `;
             }
 
