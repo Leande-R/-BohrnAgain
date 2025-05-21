@@ -19,18 +19,11 @@ async function updateNavbar() {
         const data = await res.json();
         const userNav = document.getElementById("userNav");
 
-        const accountLink = document.querySelector('a[href="account.html"]')?.closest(".nav-item");
-
-        // Zeige oder verstecke "Mein Konto"
-        if (accountLink) {
-            accountLink.style.display = data.loggedIn ? "block" : "none";
-        }
-        
         if (!userNav) return;
 
         if (data.loggedIn) {
             userNav.innerHTML = `
-                <span class="navbar-text text-white me-2">Hallo, ${data.username}</span>
+                <a class="btn btn-outline-light btn-sm me-2" href="user.html">${data.username}</a>
                 <a class="btn btn-outline-light btn-sm" href="logout.html">Logout</a>
             `;
         } else {
@@ -40,3 +33,4 @@ async function updateNavbar() {
         console.error("Fehler beim Laden des Login-Status:", err);
     }
 }
+
