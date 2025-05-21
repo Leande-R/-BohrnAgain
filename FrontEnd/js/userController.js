@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // ✅ Eingeloggt – jetzt Benutzerdaten laden
+            // ✅ Benutzerdaten laden
             fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -24,6 +24,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     currentUser = data.user;
                     updateUserView(currentUser);
                     document.getElementById('user-view').classList.remove('d-none');
+
+                    // ✅ Bestellungen laden
+                    fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'getUserOrders' })
+                    })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.success) {
+                                renderOrders(result.orders);
+                                document.getElementById('order-section').classList.remove('d-none');
+                            }
+                        });
                 })
                 .catch(err => {
                     console.error('Fehler beim Laden der Benutzerdaten:', err.message);
@@ -79,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (result.success) {
                     currentUser = data.user;
-                    window.location.href = 'user.html'; // redirect nach erfolgreichem Speichern
+                    window.location.href = 'user.html';
                 }
             });
     });
@@ -100,4 +114,45 @@ function fillForm(user) {
         const el = document.getElementById(key);
         if (el) el.value = user[key];
     }
+}
+
+function renderOrders(orders) {
+    const tbody = document.getElementById('order-body');
+    tbody.innerHTML = '';
+
+    orders.forEach(order => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${new Date(order.order_date).toLocaleDateString()}</td>
+            <td>${order.invoice_number}</td>
+            <td>${parseFloat(order.total).toFixed(2)} €</td>
+            <td>${order.status}</td>
+            <td>
+                <button class="btn btn-sm btn-info me-2" onclick="loadOrderDetails(${order.id})">Details</button>
+                <a class="btn btn-sm btn-outline-secondary" href="/-BohrnAgain/BackEnd/logic/invoice.php?order_id=${order.id}" target="_blank">Rechnung</a>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function loadOrderDetails(orderId) {
+    fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'getOrderDetails', order_id: orderId })
+    })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                const container = document.getElementById('order-details');
+                container.innerHTML = `<h5>Details für Bestellung #${orderId}</h5>`;
+                let html = '<ul class="list-group">';
+                result.items.forEach(item => {
+                html += `<li class="list-group-item">${item.quantity} × ${item.name} @ ${parseFloat(item.price).toFixed(2)} €</li>`;
+                });
+                html += '</ul>';
+                container.innerHTML += html;
+            }
+        });
 }
