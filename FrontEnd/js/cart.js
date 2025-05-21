@@ -1,26 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Warenkorb-Inhalt laden und rendern
+    // Holt die Inhalte des Warenkorbs vom Server und zeigt sie an
     fetch('/-BohrnAgain/BackEnd/logic/cart.php')
         .then(response => response.json())
-        .then(data => renderCart(data))
-        .catch(error => console.error('Fehler beim Laden des Warenkorbs:', error));
+        .then(data => renderCart(data));
 
-    // Warenkorb-Zähler separat laden
+    // Separater Request nur für die Anzahl der Artikel im Warenkorb
     fetch('/-BohrnAgain/BackEnd/logic/cart.php', {
-        headers: {
-            'X-Cart-Count': '1'
-        }
+        headers: { 'X-Cart-Count': '1' }
     })
         .then(response => response.json())
         .then(data => {
             if (data.cartCount !== undefined) {
                 updateCartCount(data.cartCount);
             }
-        })
-        .catch(error => console.error('Fehler beim Abrufen des Warenkorbzählers:', error));
+        });
 });
 
-
+// Baut die Warenkorb-Anzeige dynamisch auf
 function renderCart(items) {
     const container = document.getElementById('cart-items');
     const totalDiv = document.getElementById('cart-total');
@@ -40,9 +36,10 @@ function renderCart(items) {
         const card = document.createElement('div');
         card.className = 'card mb-2';
 
+        // HTML-Block für jedes Produkt im Warenkorb
         card.innerHTML = `
             <div class="card-body d-flex gap-3">
-                <img src="/-BohrnAgain/BackEnd/productpictures/${item.image}" alt="${item.name}" style="width: 100px; height: auto; object-fit: cover;">
+                <img src="/-BohrnAgain/BackEnd/productpictures/${item.image}" alt="${item.name}" style="width: 100px;">
                 <div class="flex-grow-1">
                     <h5>${item.name}</h5>
                     <div class="input-group input-group-sm" style="max-width: 160px;">
@@ -59,20 +56,18 @@ function renderCart(items) {
                 </div>
             </div>
         `;
-
-
         container.appendChild(card);
     });
 
     totalDiv.textContent = `Gesamtsumme: ${totalSum.toFixed(2)} €`;
 
-    // Buttons und Inputs aktivieren
+    // Verknüpft Buttons mit ihren Funktionen
     attachQuantityHandlers();
 }
 
-
+// Aktiviert die Button- und Input-Logik für Mengenanpassung und Löschen
 function attachQuantityHandlers() {
-    // + Button
+    // Menge erhöhen
     document.querySelectorAll('.btn-increase').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
@@ -82,7 +77,7 @@ function attachQuantityHandlers() {
         });
     });
 
-    // - Button
+    // Menge verringern
     document.querySelectorAll('.btn-decrease').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
@@ -93,7 +88,7 @@ function attachQuantityHandlers() {
         });
     });
 
-    // Direkteingabe
+    // Direkte Eingabe einer Menge
     document.querySelectorAll('.quantity-input').forEach(input => {
         input.addEventListener('change', () => {
             const id = input.getAttribute('data-id');
@@ -103,15 +98,16 @@ function attachQuantityHandlers() {
         });
     });
 
-    // Entfernen-Button
-document.querySelectorAll('.btn-remove').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        removeFromCart(id);
+    // Entfernt ein Produkt aus dem Warenkorb
+    document.querySelectorAll('.btn-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            removeFromCart(id);
+        });
     });
-});
-
 }
+
+// Sendet eine DELETE-Anfrage, um ein Produkt aus dem Warenkorb zu löschen
 function removeFromCart(productId) {
     fetch('/-BohrnAgain/BackEnd/logic/cart.php', {
         method: 'DELETE',
@@ -128,14 +124,11 @@ function removeFromCart(productId) {
             if (typeof updateCartCount === 'function') {
                 updateCartCount(data.cartCount);
             }
-        } else {
-            console.error('Fehler beim Entfernen des Produkts:', data.message);
         }
-    })
-    .catch(err => console.error('Serverfehler beim Entfernen:', err));
+    });
 }
 
-
+// Aktualisiert die Menge eines Produkts im Warenkorb
 function updateQuantity(productId, quantity) {
     fetch('/-BohrnAgain/BackEnd/logic/cart.php', {
         method: 'POST',
@@ -145,7 +138,6 @@ function updateQuantity(productId, quantity) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            // Optional: Warenkorb neu laden
             fetch('/-BohrnAgain/BackEnd/logic/cart.php')
                 .then(res => res.json())
                 .then(data => renderCart(data));
@@ -153,13 +145,11 @@ function updateQuantity(productId, quantity) {
             if (typeof updateCartCount === 'function') {
                 updateCartCount(data.cartCount);
             }
-        } else {
-            console.error('Fehler beim Aktualisieren der Menge:', data.message);
         }
-    })
-    .catch(err => console.error('Serverfehler beim Ändern der Menge:', err));
+    });
 }
 
+// Aktualisiert die Zahl neben dem Warenkorb-Icon
 function updateCartCount(count) {
     const cartCountElement = document.getElementById('cart-count');
     if (cartCountElement) {
@@ -167,6 +157,7 @@ function updateCartCount(count) {
     }
 }
 
+// Beim Klick auf „Zur Kasse“ wird geprüft, ob der Nutzer eingeloggt ist
 document.getElementById("checkout-btn")?.addEventListener("click", async () => {
     try {
         const res = await fetch("/-BohrnAgain/BackEnd/logic/session_status.php");
@@ -175,11 +166,10 @@ document.getElementById("checkout-btn")?.addEventListener("click", async () => {
         if (data.loggedIn) {
             window.location.href = "checkout.html";
         } else {
-            window.location.href = "login.html";
+            window.location.href = "login.html?redirect=checkout";
         }
     } catch (err) {
         console.error("Fehler bei der Session-Prüfung:", err);
         alert("Beim Weiterleiten zur Kasse ist ein Fehler aufgetreten.");
     }
 });
-

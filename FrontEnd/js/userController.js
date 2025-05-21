@@ -1,18 +1,17 @@
-let currentUser = {};
+let currentUser = {}; // Speichert eingeloggte Benutzerdaten
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Prüft Session und lädt Benutzerdaten, wenn eingeloggt
     fetch('/-BohrnAgain/BackEnd/logic/session_status.php')
-        .then(res => {
-            if (!res.ok) throw new Error("Fehler beim Laden der Sessiondaten");
-            return res.json();
-        })
+        .then(res => res.json())
         .then(session => {
             if (!session.loggedIn) {
+                // Falls nicht eingeloggt: Fehlermeldung anzeigen
                 document.getElementById('unauthorized').classList.remove('d-none');
                 return;
             }
 
-            // ✅ Benutzerdaten laden
+            // Benutzerdaten vom Server abrufen
             fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     updateUserView(currentUser);
                     document.getElementById('user-view').classList.remove('d-none');
 
-                    // ✅ Bestellungen laden
+                    // Bestellungen abrufen und anzeigen
                     fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -43,12 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.error('Fehler beim Laden der Benutzerdaten:', err.message);
                     document.getElementById('unauthorized').classList.remove('d-none');
                 });
-        })
-        .catch(err => {
-            console.error('Fehler bei Sessionprüfung:', err.message);
-            document.getElementById('unauthorized').classList.remove('d-none');
         });
 
+    // Umschalten zwischen Anzeige und Bearbeitungsmodus
     document.getElementById('edit-btn').addEventListener('click', () => {
         fillForm(currentUser);
         document.getElementById('user-form').classList.remove('d-none');
@@ -61,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('feedback').textContent = '';
     });
 
+    // Speichern geänderter Benutzerdaten
     document.getElementById('user-form').addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -80,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
+        // Daten an Server senden
         fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -91,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 feedback.textContent = result.message;
                 feedback.className = result.success ? 'text-success' : 'text-danger';
 
+                // Bei Erfolg: Seite neu laden
                 if (result.success) {
                     currentUser = data.user;
                     window.location.href = 'user.html';
@@ -99,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Zeigt die Benutzerdaten im Lesemodus
 function updateUserView(user) {
     document.getElementById('view-salutation').textContent = user.salutation || '';
     document.getElementById('view-name').textContent = `${user.firstname} ${user.lastname}`;
@@ -109,6 +109,7 @@ function updateUserView(user) {
     document.getElementById('view-payment').textContent = user.payment_info;
 }
 
+// Füllt das Formular mit den Benutzerdaten
 function fillForm(user) {
     for (const key in user) {
         const el = document.getElementById(key);
@@ -116,6 +117,7 @@ function fillForm(user) {
     }
 }
 
+// Rendert alle Bestellungen des Nutzers in einer Tabelle
 function renderOrders(orders) {
     const tbody = document.getElementById('order-body');
     tbody.innerHTML = '';
@@ -136,6 +138,7 @@ function renderOrders(orders) {
     });
 }
 
+// Holt und zeigt die Bestellpositionen zu einer bestimmten Bestellung
 function loadOrderDetails(orderId) {
     fetch('/-BohrnAgain/BackEnd/logic/userController.php', {
         method: 'POST',
@@ -149,7 +152,7 @@ function loadOrderDetails(orderId) {
                 container.innerHTML = `<h5>Details für Bestellung #${orderId}</h5>`;
                 let html = '<ul class="list-group">';
                 result.items.forEach(item => {
-                html += `<li class="list-group-item">${item.quantity} × ${item.name} @ ${parseFloat(item.price).toFixed(2)} €</li>`;
+                    html += `<li class="list-group-item">${item.quantity} × ${item.name} @ ${parseFloat(item.price).toFixed(2)} €</li>`;
                 });
                 html += '</ul>';
                 container.innerHTML += html;
