@@ -18,6 +18,7 @@ async function updateNavbar() {
         const res = await fetch("/-BohrnAgain/BackEnd/logic/session_status.php");
         const data = await res.json();
         const userNav = document.getElementById("userNav");
+        const adminNav = document.getElementById("adminNav");
 
         if (!userNav) return;
 
@@ -26,11 +27,24 @@ async function updateNavbar() {
                 <a class="btn btn-outline-light btn-sm me-2" href="user.html">${data.username}</a>
                 <a class="btn btn-outline-light btn-sm" href="logout.html">Logout</a>
             `;
+
+            // Wenn Admin eingeloggt -> Admin-Menü einblenden
+            if (data.role === "admin" && adminNav) {
+                adminNav.innerHTML = `
+                    <a class="nav-link text-warning" href="admin_products.html">Produkte bearbeiten</a>
+                    <a class="nav-link text-warning" href="admin_users.html">Kunden verwalten</a>
+                    <a class="nav-link text-warning" href="admin_vouchers.html">Gutscheine</a>
+                `;
+            }
+
         } else {
             userNav.innerHTML = `<a class="nav-link" href="login.html">Login</a>`;
+            if (adminNav) adminNav.innerHTML = ""; // sicherheitshalber leeren
         }
+
     } catch (err) {
         console.error("Fehler beim Laden des Login-Status:", err);
     }
 }
+
 
