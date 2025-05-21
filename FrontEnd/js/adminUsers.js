@@ -87,6 +87,12 @@ function loadUserOrders(userId) {
                             <td>${parseFloat(order.total).toFixed(2)} €</td>
                             <td>${order.status}</td>
                         </tr>
+                        <tr>
+                            <td colspan="4">
+                                <button class="btn btn-sm btn-secondary mb-2" onclick="loadOrderDetails(${order.id}, this)">Details anzeigen</button>
+                                <div class="order-details mt-2"></div>
+                            </td>
+                        </tr>
                     `;
                 });
                 html += `</tbody></table>`;
@@ -95,6 +101,48 @@ function loadUserOrders(userId) {
         });
 }
 
+function loadOrderDetails(orderId, button) {
+    const detailsDiv = button.nextElementSibling;
+
+    // Falls schon Daten geladen, nur ein-/ausblenden
+    if (detailsDiv.dataset.loaded === "true") {
+        detailsDiv.classList.toggle("d-none");
+        return;
+    }
+
+    fetch("/-BohrnAgain/BackEnd/logic/userController.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "getOrderDetailsByAdmin", order_id: orderId })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                detailsDiv.innerHTML = `<div class="text-danger">${data.error || "Fehler beim Laden der Details."}</div>`;
+                return;
+            }
+
+            if (data.items.length === 0) {
+                detailsDiv.innerHTML = "<p>Keine Artikel in dieser Bestellung.</p>";
+            } else {
+                let innerHtml = `
+                    <table class="table table-bordered table-sm">
+                        <thead><tr><th>Artikel</th><th>Menge</th><th>Stückpreis</th></tr></thead>
+                        <tbody>`;
+                data.items.forEach(item => {
+                    innerHtml += `<tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>${parseFloat(item.price).toFixed(2)} €</td>
+                    </tr>`;
+                });
+                innerHtml += "</tbody></table>";
+                detailsDiv.innerHTML = innerHtml;
+            }
+
+            detailsDiv.dataset.loaded = "true";
+        });
+}
 // Deaktiviert einen Benutzer (setzt is_active auf 0)
 function deactivateUser(userId) {
     if (!confirm("Möchtest du diesen Nutzer wirklich deaktivieren?")) return;
