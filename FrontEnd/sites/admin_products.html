@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin – Produkte verwalten</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../js/admin_products.js" defer></script>
+    <script src="../js/navbarLoader.js" defer></script>
+</head>
+<body>
+<div id="navbar-placeholder"></div>
+
+<div class="container mt-5">
+    <h2>Produktverwaltung</h2>
+    <div id="admin-msg" class="my-3"></div>
+
+    <!-- Neues Produkt hinzufügen -->
+    <h4>Neues Produkt anlegen</h4>
+<form id="productForm" enctype="multipart/form-data" class="mb-4">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="price" class="form-label">Preis (€)</label>
+            <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="rating" class="form-label">Bewertung (1–5)</label>
+            <input type="number" step="0.1" min="1" max="5" class="form-control" id="rating" name="rating" required>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Beschreibung</label>
+        <textarea class="form-control" id="description" name="description" rows="2" required></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="category_id" class="form-label">Kategorie</label>
+            <select class="form-select" id="category_id" name="category_id" required></select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="image" class="form-label">Produktbild</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Produkt anlegen</button>
+</form>
+
+<hr>
+<h4>Bestehende Produkte</h4>
+<div id="productList" class="row row-cols-1 row-cols-md-3 g-4 mt-2"></div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
