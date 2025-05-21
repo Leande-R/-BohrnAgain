@@ -104,7 +104,7 @@ function renderProducts(products) {
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text">${product.description}</p>
                     <p><strong>${parseFloat(product.price).toFixed(2)} €</strong></p>
-                    <p>Bewertung: ${product.rating} / 5</p>
+                    <p>Bewertung:⭐ ${product.rating} / 5</p>
                     <button class="btn btn-success add-to-cart-btn" data-id="${product.id}">In den Warenkorb</button>
                 </div>
             </div>
