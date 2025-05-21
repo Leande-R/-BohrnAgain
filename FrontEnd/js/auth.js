@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const result = await response.json();
                 if (result.success) {
-                    showMessage("Registrierung erfolgreich abgeschlossen.", "success");
-                    form.reset();
-                } else {
+                    showMessage("Registrierung erfolgreich abgeschlossen. Du wirst jetzt weitergeleitet…", "success");
+                    setTimeout(() => window.location.href = "login.html", 2000);
+                }else {
                     showMessage(result.error || "Ein Fehler ist bei der Registrierung aufgetreten.", "danger");
                 }
 
@@ -67,9 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showMessage(msg, type) {
-        const div = document.getElementById("registerMsg") || document.getElementById("loginMsg");
+    const div = document.getElementById("registerMsg") || document.getElementById("loginMsg");
         if (div) {
-            div.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+            div.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${msg}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`;
         }
     }
+
 });

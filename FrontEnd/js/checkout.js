@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const sessionData = await sessionRes.json();
 
         if (!sessionData.loggedIn) {
-            window.location.href = "login.html";
+            window.location.href = "login.html?redirect=1";
             return;
         }
 
@@ -81,3 +81,10 @@ function showMessage(msg, type) {
     const div = document.getElementById("order-msg");
     div.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
 }
+
+// Message für nicht eingeloggte Benutzer, die versuchen, auf den Checkout zuzugreifen
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("redirect") === "1") {
+    showMessage("⚠️ Sie müssen eingeloggt sein, um fortzufahren.", "warning");
+}
+
