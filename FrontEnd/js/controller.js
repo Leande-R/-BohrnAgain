@@ -1,36 +1,35 @@
-let allProducts = [];
-let selectedCategoryId = null;
+let allProducts = [];           // Alle Produkte (global gespeichert)
+let selectedCategoryId = null; // Aktuell ausgewählte Kategorie
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryBar = document.getElementById('category-bar');
     const searchInput = document.getElementById('search-input');
 
-    // 1. Erst Produkte laden (einmalig)
+    // 1. Produkte einmalig vom Server laden und anzeigen
     fetch('/-BohrnAgain/BackEnd/logic/productController.php')
         .then(response => response.json())
         .then(products => {
             allProducts = products;
             renderProducts(allProducts);
-        })
-        .catch(error => console.error('Fehler beim Laden der Produkte:', error));
+        });
 
-    // 2. Kategorien laden und Buttons setzen
+    // 2. Kategorien laden und Buttons dynamisch erzeugen
     fetch('/-BohrnAgain/BackEnd/logic/categoryController.php')
         .then(response => response.json())
         .then(categories => {
             categoryBar.innerHTML = '';
 
-            // Button: "Alle Produkte"
+            // Button für „Alle Produkte“
             const allBtn = document.createElement('button');
             allBtn.textContent = 'Alle Produkte';
             allBtn.classList.add('btn', 'btn-outline-primary', 'me-2', 'active');
             allBtn.addEventListener('click', () => {
                 activateCategoryButton(allBtn, null);
-                renderProducts(allProducts); // Alle anzeigen
+                renderProducts(allProducts);
             });
             categoryBar.appendChild(allBtn);
 
-            // Kategorie-Buttons
+            // Buttons für jede einzelne Kategorie
             categories.forEach(category => {
                 const btn = document.createElement('button');
                 btn.textContent = category.name;
@@ -41,49 +40,49 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 categoryBar.appendChild(btn);
             });
+        });
 
-        })
-        .catch(error => console.error('Fehler beim Laden der Kategorien:', error));
-
-    // 3. Suche live filtern
+    // 3. Produktsuche über Eingabefeld (live)
     if (searchInput) {
-    searchInput.addEventListener('input', function () {
-        const query = this.value.trim().toLowerCase();
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            let filtered = allProducts;
 
-        let filtered = allProducts;
+            // Optional nach Kategorie filtern
+            if (selectedCategoryId !== null) {
+                filtered = filtered.filter(p => p.category_id == selectedCategoryId);
+            }
 
-        if (selectedCategoryId !== null) {
-            filtered = filtered.filter(p => p.category_id == selectedCategoryId);
-        }
+            // Produktsuche nach Name
+            filtered = filtered.filter(p =>
+                p.name.toLowerCase().includes(query)
+            );
 
-        filtered = filtered.filter(p =>
-            p.name.toLowerCase().includes(query)
-        );
+            renderProducts(filtered);
+        });
+    }
 
-        renderProducts(filtered);
-    });
-}
-
-    // 4. Warenkorb-Status abrufen
+    // 4. Anzahl der Artikel im Warenkorb anzeigen
     fetch('/-BohrnAgain/BackEnd/logic/cart.php')
         .then(response => response.json())
-        .then(data => updateCartCount(data.cartCount))
-        .catch(error => console.error('Fehler beim Abrufen der Warenkorbanzahl:', error));
+        .then(data => updateCartCount(data.cartCount));
 });
 
+// Markiert aktiven Kategorie-Button visuell und setzt Filter zurück
 function activateCategoryButton(activeBtn, categoryId = null) {
     document.querySelectorAll('#category-bar .btn').forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
-    document.getElementById('search-input').value = ''; // Suche leeren beim Kategorie-Wechsel
-    selectedCategoryId = categoryId; // merken, was ausgewählt ist
+    document.getElementById('search-input').value = ''; // Suchfeld zurücksetzen
+    selectedCategoryId = categoryId;
 }
 
-
+// Filtert Produktliste nach gewählter Kategorie
 function filterByCategory(categoryId) {
     const filtered = allProducts.filter(product => product.category_id == categoryId);
     renderProducts(filtered);
 }
 
+// Baut die Produktkarten im DOM
 function renderProducts(products) {
     const container = document.getElementById('product-list');
     container.innerHTML = '';
@@ -112,6 +111,7 @@ function renderProducts(products) {
         container.appendChild(card);
     });
 
+    // „In den Warenkorb“-Buttons aktivieren
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', () => {
             const productId = button.getAttribute('data-id');
@@ -120,26 +120,24 @@ function renderProducts(products) {
     });
 }
 
+// Fügt ein Produkt zum Warenkorb hinzu (POST)
 function addToCart(productId) {
     fetch('/-BohrnAgain/BackEnd/logic/cart.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: productId })
     })
-        .then(response => {
-            if (!response.ok) throw new Error("Serverfehler");
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                updateCartCount(data.cartCount);
-            } else {
-                console.error("Fehler beim Hinzufügen:", data.error);
-            }
-        })
-        .catch(error => console.error('Fehler beim Hinzufügen zum Warenkorb:', error));
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateCartCount(data.cartCount);
+        } else {
+            console.error("Fehler beim Hinzufügen:", data.error);
+        }
+    });
 }
 
+// Aktualisiert die Warenkorbanzahl in der Navbar
 function updateCartCount(count) {
     const cartCountEl = document.getElementById('cart-count');
     if (cartCountEl) {

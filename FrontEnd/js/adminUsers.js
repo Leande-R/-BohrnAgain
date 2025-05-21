@@ -1,4 +1,6 @@
+// Wird ausgeführt, sobald die Seite vollständig geladen ist
 document.addEventListener("DOMContentLoaded", () => {
+    // Prüfe ob der Benutzer als Admin eingeloggt ist
     fetch("/-BohrnAgain/BackEnd/logic/session_status.php")
         .then(res => res.json())
         .then(session => {
@@ -6,10 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("admin-msg").textContent = "Zugriff verweigert – nur Administratoren erlaubt.";
                 return;
             }
+            // Wenn Admin: Lade alle User
             loadAllUsers();
         });
 });
 
+// Holt alle Benutzer vom Server
 function loadAllUsers() {
     fetch("/-BohrnAgain/BackEnd/logic/userController.php", {
         method: "POST",
@@ -23,6 +27,7 @@ function loadAllUsers() {
         });
 }
 
+// Baut die User-Tabelle im HTML dynamisch auf
 function renderUsers(users) {
     const tbody = document.getElementById("user-table-body");
     tbody.innerHTML = "";
@@ -44,6 +49,7 @@ function renderUsers(users) {
     });
 }
 
+// Holt Bestellungen eines bestimmten Benutzers
 function loadUserOrders(userId) {
     fetch("/-BohrnAgain/BackEnd/logic/userController.php", {
         method: "POST",
@@ -58,6 +64,7 @@ function loadUserOrders(userId) {
                 return;
             }
 
+            // Ausgabeformat für Bestellungen
             let html = `<h4>Bestellungen von User #${userId}</h4>`;
             if (data.orders.length === 0) {
                 html += `<p>Keine Bestellungen vorhanden.</p>`;
@@ -88,6 +95,7 @@ function loadUserOrders(userId) {
         });
 }
 
+// Deaktiviert einen Benutzer (setzt is_active auf 0)
 function deactivateUser(userId) {
     if (!confirm("Möchtest du diesen Nutzer wirklich deaktivieren?")) return;
 
@@ -98,7 +106,7 @@ function deactivateUser(userId) {
     })
         .then(res => res.json())
         .then(data => {
-            if (data.success) loadAllUsers();
+            if (data.success) loadAllUsers(); // Tabelle neu laden
             else alert(data.error || "Fehler beim Deaktivieren.");
         });
 }

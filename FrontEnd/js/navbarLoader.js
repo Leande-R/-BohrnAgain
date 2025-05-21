@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Lädt die HTML-Datei für die Navigationsleiste dynamisch
     fetch("navbar.html")
         .then(response => response.text())
         .then(data => {
@@ -6,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (navbarContainer) {
                 navbarContainer.innerHTML = data;
 
-                // Sobald die Navbar geladen ist → Login-Status prüfen
+                // Nach dem Laden der Navbar wird der Login-Status geprüft
                 updateNavbar();
             }
         })
@@ -15,20 +16,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function updateNavbar() {
     try {
+        // Fragt den aktuellen Session-Status vom Server ab
         const res = await fetch("/-BohrnAgain/BackEnd/logic/session_status.php");
         const data = await res.json();
+
         const userNav = document.getElementById("userNav");
         const adminNav = document.getElementById("adminNav");
-
         if (!userNav) return;
 
         if (data.loggedIn) {
+            // Benutzer ist eingeloggt: zeige Namen und Logout-Link
             userNav.innerHTML = `
                 <a class="btn btn-outline-light btn-sm me-2" href="user.html">${data.username}</a>
                 <a class="btn btn-outline-light btn-sm" href="logout.html">Logout</a>
             `;
 
-            // Wenn Admin eingeloggt -> Admin-Menü einblenden
+            // Zusätzliches Menü für Admins sichtbar machen
             if (data.role === "admin" && adminNav) {
                 adminNav.innerHTML = `
                     <a class="nav-link text-warning" href="admin_products.html">Produkte bearbeiten</a>
@@ -37,13 +40,12 @@ async function updateNavbar() {
             }
 
         } else {
+            // Wenn nicht eingeloggt: nur Login-Link anzeigen
             userNav.innerHTML = `<a class="nav-link" href="login.html">Login</a>`;
-            if (adminNav) adminNav.innerHTML = ""; // sicherheitshalber leeren
+            if (adminNav) adminNav.innerHTML = "";
         }
 
     } catch (err) {
         console.error("Fehler beim Laden des Login-Status:", err);
     }
 }
-
-
