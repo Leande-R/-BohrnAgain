@@ -216,6 +216,28 @@ switch ($action) {
         break;
     
 
+            case 'getOrderDetailsByAdmin':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+            echo json_encode(['success' => false, 'error' => 'Nicht autorisiert']);
+            exit;
+        }
+
+        $orderId = $input['order_id'] ?? null;
+        if (!$orderId) {
+            echo json_encode(['success' => false, 'error' => 'Bestell-ID fehlt']);
+            exit;
+        }
+
+        // Hole die Positionen zur Bestellung
+        $stmt = $pdo->prepare("SELECT oi.quantity, oi.price, p.name
+                            FROM order_items oi
+                            JOIN products p ON oi.product_id = p.id
+                            WHERE oi.order_id = ?");
+        $stmt->execute([$orderId]);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode(['success' => true, 'items' => $items]);
+        break;
 
 
  
