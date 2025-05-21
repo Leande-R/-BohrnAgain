@@ -55,8 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         document.cookie = `rememberUser=${result.token}; path=/; max-age=604800`; // 7 Tage
                     }
                     showMessage("Anmeldung erfolgreich.", "success");
-                    setTimeout(() => window.location.href = "/-BohrnAgain/Frontend/sites/index.html", 1000);
-                } else {
+                        const redirect = new URLSearchParams(window.location.search).get("redirect");
+                        const target = redirect === "checkout"
+                            ? "/-BohrnAgain/Frontend/sites/checkout.html"
+                            : "/-BohrnAgain/Frontend/sites/index.html";
+
+                        setTimeout(() => window.location.href = target, 1000);                
+                    } else {
                     showMessage(result.error || "Benutzername oder Passwort sind ungültig.", "danger");
                 }
 
