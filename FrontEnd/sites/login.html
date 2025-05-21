@@ -1,32 +1,52 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Login – BohrnAgain</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="../js/auth.js" defer></script>
-</head>
-<body class="container mt-5">
-
-<h2>Login</h2>
-<form id="loginForm">
-    <div class="mb-3">
-        <label>Benutzername oder E-Mail</label>
-        <input type="text" class="form-control" name="identifier" required>
-    </div>
-    <div class="mb-3">
-        <label>Passwort</label>
-        <input type="password" class="form-control" name="password" required>
-    </div>
-    <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
-    <label class="form-check-label" for="rememberMe">Login merken</label>
-</div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <div id="loginMsg" class="mt-3"></div>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     
-</form>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- JS -->
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/navbarLoader.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder" class="w-100"></div>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    ⚠️ Sie müssen eingeloggt sein, um fortzufahren.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
+    <!-- 🔐 Login-Formular -->
+    <div class="container mt-5">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label>Benutzername oder E-Mail</label>
+                <input type="text" class="form-control" name="identifier" required>
+            </div>
+            <div class="mb-3">
+                <label>Passwort</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                <label class="form-check-label" for="rememberMe">Login merken</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <div id="loginMsg" class="mt-3"></div>
+        </form>
+
+        <div class="mt-3">
+            <p>Noch keinen Account? <a href="register.html" class="btn btn-link">Jetzt registrieren</a></p>
+        </div>
+    </div>
 
 </body>
 </html>
