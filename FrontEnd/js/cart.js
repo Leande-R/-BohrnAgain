@@ -167,4 +167,19 @@ function updateCartCount(count) {
     }
 }
 
+document.getElementById("checkout-btn")?.addEventListener("click", async () => {
+    try {
+        const res = await fetch("/-BohrnAgain/BackEnd/logic/session_status.php");
+        const data = await res.json();
+
+        if (data.loggedIn) {
+            window.location.href = "checkout.html";
+        } else {
+            window.location.href = "login.html";
+        }
+    } catch (err) {
+        console.error("Fehler bei der Session-Prüfung:", err);
+        alert("Beim Weiterleiten zur Kasse ist ein Fehler aufgetreten.");
+    }
+});
 
